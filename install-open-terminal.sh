@@ -166,7 +166,7 @@ management_menu() {
     echo -e "  ${CYAN}4${NC}) Uninstall     (remove everything)"
     echo -e "  ${CYAN}5${NC}) Quit"
     echo ""
-    read -rp "$(echo -e "${YELLOW}Choose [1-5]:${NC} ")" MGMT_CHOICE
+    read -rp "$(echo -e "${YELLOW}Choose [1-5]:${NC} ")" MGMT_CHOICE < /dev/tty
 
     case "$MGMT_CHOICE" in
         1) action_reconfigure ;;
@@ -253,7 +253,7 @@ configure() {
     fi
 
     # Port
-    read -rp "$(echo -e "${CYAN}Port${NC} [${old_port}]: ")" INPUT_PORT
+    read -rp "$(echo -e "${CYAN}Port${NC} [${old_port}]: ")" INPUT_PORT < /dev/tty
     PORT="${INPUT_PORT:-$old_port}"
 
     # Listen address - simple choice
@@ -263,7 +263,7 @@ configure() {
     echo ""
     local host_default="1"
     [ "$old_host" = "127.0.0.1" ] && host_default="2"
-    read -rp "$(echo -e "${CYAN}Listen address${NC} [${host_default}]: ")" INPUT_HOST
+    read -rp "$(echo -e "${CYAN}Listen address${NC} [${host_default}]: ")" INPUT_HOST < /dev/tty
     INPUT_HOST="${INPUT_HOST:-$host_default}"
     case "$INPUT_HOST" in
         2) HOST="127.0.0.1" ;;
@@ -275,7 +275,7 @@ configure() {
         local masked="${old_key:0:6}...${old_key: -4}"
         echo ""
         echo -e "  Current API Key: ${GREEN}${masked}${NC}"
-        read -rp "$(echo -e "${CYAN}API Key${NC} [keep current / enter new / 'gen' to regenerate]: ")" INPUT_KEY
+        read -rp "$(echo -e "${CYAN}API Key${NC} [keep current / enter new / 'gen' to regenerate]: ")" INPUT_KEY < /dev/tty
         case "$INPUT_KEY" in
             "") API_KEY="$old_key" ;;
             gen|GEN) API_KEY="sk-$(python3 -c 'import secrets; print(secrets.token_hex(24))')" ;;
@@ -283,23 +283,23 @@ configure() {
         esac
     else
         DEFAULT_KEY="sk-$(python3 -c 'import secrets; print(secrets.token_hex(24))')"
-        read -rp "$(echo -e "${CYAN}API Key${NC} [auto-generated]: ")" INPUT_KEY
+        read -rp "$(echo -e "${CYAN}API Key${NC} [auto-generated]: ")" INPUT_KEY < /dev/tty
         API_KEY="${INPUT_KEY:-$DEFAULT_KEY}"
     fi
 
     # CORS
-    read -rp "$(echo -e "${CYAN}CORS allowed origins${NC} [${old_cors}]: ")" INPUT_CORS
+    read -rp "$(echo -e "${CYAN}CORS allowed origins${NC} [${old_cors}]: ")" INPUT_CORS < /dev/tty
     CORS="${INPUT_CORS:-$old_cors}"
 
     # Auto-update
-    read -rp "$(echo -e "${CYAN}Enable auto-update?${NC} [Y/n]: ")" INPUT_UPDATE
+    read -rp "$(echo -e "${CYAN}Enable auto-update?${NC} [Y/n]: ")" INPUT_UPDATE < /dev/tty
     case "${INPUT_UPDATE,,}" in
         n|no) AUTO_UPDATE=false ;;
         *)    AUTO_UPDATE=true ;;
     esac
 
     if [ "$AUTO_UPDATE" = true ]; then
-        read -rp "$(echo -e "${CYAN}Update check interval (hours)${NC} [6]: ")" INPUT_INTERVAL
+        read -rp "$(echo -e "${CYAN}Update check interval (hours)${NC} [6]: ")" INPUT_INTERVAL < /dev/tty
         UPDATE_INTERVAL="${INPUT_INTERVAL:-6}"
     fi
 
@@ -313,7 +313,7 @@ configure() {
     [ "$AUTO_UPDATE" = true ] && echo -e "  Interval:    ${GREEN}every ${UPDATE_INTERVAL}h${NC}"
     echo ""
 
-    read -rp "$(echo -e "${YELLOW}Proceed? [Y/n]:${NC} ")" CONFIRM
+    read -rp "$(echo -e "${YELLOW}Proceed? [Y/n]:${NC} ")" CONFIRM < /dev/tty
     case "${CONFIRM,,}" in
         n|no) echo "Aborted."; exit 0 ;;
     esac
